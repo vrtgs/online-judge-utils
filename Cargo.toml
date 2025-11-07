@@ -2,7 +2,7 @@
 name = "online-judge-utils"
 version = "0.1.21"
 edition = "2021"
-repository = "https://github.com/Vrtgs/online-judge-utils.git"
+repository = "https://github.com/Vrtgs/online-judge-utils"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
