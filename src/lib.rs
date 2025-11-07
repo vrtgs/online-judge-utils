@@ -507,7 +507,9 @@ macro_rules! parse {
 
 #[macro_export]
 macro_rules! interactive_mode {
-    () => { let () = $crate::__set_interactive() };
+    () => {
+        let () = $crate::__set_interactive();
+    };
 }
 
 #[macro_export]
