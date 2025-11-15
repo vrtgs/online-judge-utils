@@ -289,7 +289,7 @@ impl Write for OutputInner {
 #[derive(Debug)]
 pub struct PoisonedOutput {
     pub panic: Cow<'static, str>,
-    pub output: Vec<u8>
+    pub output: Vec<u8>,
 }
 
 pub struct Capture(Result<Vec<u8>, PoisonedOutput>, Box<dyn Write>);
@@ -334,7 +334,7 @@ pub fn capture(f: impl FnOnce() + UnwindSafe) -> Capture {
             let mut capture = output.capture();
             let err = PoisonedOutput {
                 panic: e,
-                output: capture.0.unwrap()
+                output: capture.0.unwrap(),
             };
             capture.0 = Err(err);
             capture
@@ -346,7 +346,6 @@ thread_local! {
     static INTERACTIVE: Cell<bool> = const { Cell::new(false) };
 }
 
-
 fn read_line() -> Option<&'static str> {
     let mut buf = String::new();
     let 1.. = INPUT_SOURCE.with(|r| {
@@ -354,7 +353,7 @@ fn read_line() -> Option<&'static str> {
         let mut r = r.borrow_mut();
         let res = match INTERACTIVE.get() {
             true => r.read_line(&mut buf),
-            false => r.read_to_string(&mut buf)
+            false => r.read_to_string(&mut buf),
         };
         
         res.expect("unable to read input to a string")
@@ -429,11 +428,11 @@ fn with_token_reader<F: FnOnce(&mut TokenReader<'static>) -> T, T>(fun: F) -> T 
         match current_tokens.get().trim_start() {
             "" => {
                 while let Some(s) = read_line() {
-                    match s { 
+                    match s {
                         "" => continue,
-                        s => { 
+                        s => {
                             current_tokens.set(s);
-                            break
+                            break;
                         }
                     }
                 }
@@ -466,7 +465,7 @@ fn with_token_reader<F: FnOnce(&mut TokenReader<'static>) -> T, T>(fun: F) -> T 
 
 pub mod get_input {
     use super::{with_token_reader, TokenReader};
-    
+
     pub fn current_line() -> Option<&'static str> {
         with_token_reader(TokenReader::next_line)
     }
@@ -548,10 +547,10 @@ macro_rules! input {
     [r!($($t:tt)*); $n:expr; $container: ident] => { input![r!($($t)*); $n; $container; Map(::std::convert::identity)] };
     [     $t:ty   ; $n:expr; $container: ident] => { input![r!(  $t  ); $n; $container] };
 
-    [r!($($t:tt)*); $n:expr] => {{ 
+    [r!($($t:tt)*); $n:expr] => {{
         use ::std::boxed::Box;
         type BoxSlice<T> = Box<[T]>;
-        
+
         let x: Box<[_]> = input![r!($($t)*); $n; BoxSlice];
         x
     }};
@@ -585,10 +584,7 @@ pub fn __output<I: IntoIterator<Item = D>, D: Display>(iter: I) {
 pub fn __flush() {
     OUTPUT_SOURCE.with(|out| {
         // we don't let borrows escape the current thread, not the func
-        out
-            .borrow_mut()
-            .flush()
-            .expect("unable to flush stdout");
+        out.borrow_mut().flush().expect("unable to flush stdout");
     })
 }
 
